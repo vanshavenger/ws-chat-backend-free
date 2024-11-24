@@ -1,6 +1,13 @@
 import { WebSocketServer, WebSocket } from "ws";
+import https from "https";
+import fs from "fs";
 
-const wss = new WebSocketServer({ port: 8080 });
+const server = https.createServer({
+  cert: fs.readFileSync('/home/vanshchopra101/ssl/fullchain.pem'),
+  key: fs.readFileSync('/home/vanshchopra101/ssl/privkey.pem'),
+});
+
+const wss = new WebSocket.Server({ server });
 
 type Client = {
   socket: WebSocket;
@@ -94,4 +101,7 @@ wss.on("connection", (ws: WebSocket) => {
     });
 });
 
-console.log("WebSocket server is running on port 8080");
+
+server.listen(8080, () => {
+  console.log('Secure WebSocket server running on wss://vansh-ws.dsandev.in:8080');
+});
